@@ -64,7 +64,7 @@ counted. Buy the round number.
 
 **Print:** 4 x `FootPad`, 4 x `Joint4_corner`
 
-**Conduit:** 4 x 768 mm, 2 x 531 mm, 2 x 471 mm
+**Conduit:** 4 x 768 mm post, 2 x 531 mm rail along Y, 2 x 471 mm rail across X
 
 **Fasteners:** 16 x M4
 
@@ -76,7 +76,7 @@ Thread EVERY corner clamp and foot onto the posts before you stand anything up -
 
 **Print:** 4 x `Joint4_corner`
 
-**Conduit:** 2 x 531 mm, 2 x 471 mm
+**Conduit:** 2 x 531 mm rail along Y, 2 x 471 mm rail across X
 
 **Fasteners:** 12 x M4
 
@@ -88,7 +88,7 @@ Square the frame now, with a tape across both diagonals of the cap, before anyth
 
 **Print:** 2 x `Gusset_cap_a`, 2 x `Gusset_cap_b`, 1 x `Gusset_rear_high`, 1 x `Gusset_rear_low`, 2 x `Gusset_side_high`, 2 x `Gusset_side_low`
 
-**Conduit:** 1 x 698 mm, 2 x 519 mm, 2 x 166 mm
+**Conduit:** 1 x 783 mm diagonal, 2 x 715 mm diagonal, 2 x 199 mm diagonal
 
 **Fasteners:** 14 x M4
 
@@ -100,7 +100,7 @@ This is what makes the frame a frame rather than a four-bar linkage. Do not skip
 
 **Print:** 4 x `Joint4_corner`
 
-**Conduit:** 2 x 471 mm
+**Conduit:** 2 x 471 mm rail across X
 
 **Fasteners:** 12 x M4
 
@@ -112,7 +112,7 @@ The mid rail ties the front posts and carries the electronics; the wipe rail sit
 
 **Print:** 4 x `TeeZCross`, 2 x `ZMotorMount`
 
-**Conduit:** 2 x 471 mm
+**Conduit:** 2 x 471 mm rail across X
 
 **Fasteners:** 8 x M3, 16 x M4
 

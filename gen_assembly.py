@@ -63,19 +63,88 @@ def step_parts(doc, pre):
     return out
 
 
+EMT_PREFIX = ("Post_", "RailX", "RailY", "Brace_")
+
+
+def tube_len(shape):
+    """True axial length of a conduit cylinder.
+
+    NOT the bounding box. A box reports the longest AXIS, which for the five
+    diagonals is not their length at all - it had the rear brace at 698 mm
+    instead of 783 and the side braces at 519 instead of 715, so the assembly
+    steps asked you to cut pieces that would not reach. Project the vertices
+    onto the lateral face's own axis instead.
+    """
+    ax = None
+    for f in shape.Faces:
+        if f.Surface.__class__.__name__ == "Cylinder":
+            ax = f.Surface.Axis
+            break
+    if ax is None:
+        bb = shape.BoundBox
+        return max(bb.XLength, bb.YLength, bb.ZLength)
+    ts = [v.Point.x * ax.x + v.Point.y * ax.y + v.Point.z * ax.z
+          for v in shape.Vertexes]
+    return max(ts) - min(ts)
+
+
+def tube_kind(name):
+    if name.startswith("Post_"):
+        return "post"
+    if name.startswith("Brace_"):
+        return "diagonal"
+    if name.startswith("RailX"):
+        return "rail across X"
+    return "rail along Y"
+
+
 def step_emt(doc, pre):
-    """EMT pieces added by a step: {rounded length mm: count}."""
+    """EMT pieces added by a step: {(rounded mm, what it is): count}."""
     out = {}
     for o in placed(doc):
-        if not starts(o.Name, pre):
+        if not starts(o.Name, pre) or not o.Name.startswith(EMT_PREFIX):
             continue
-        if not o.Name.startswith(("Post_", "RailX", "RailY", "Brace_")):
-            continue
-        bb = o.Shape.BoundBox
-        L = max(bb.XLength, bb.YLength, bb.ZLength)
-        k = int(round(L))
+        k = (int(round(tube_len(o.Shape))), tube_kind(o.Name))
         out[k] = out.get(k, 0) + 1
     return out
+
+
+def check_coverage(doc):
+    """The per-step tables must add up to the cut list and the print list.
+
+    Same failure mode as the corner-joint count: a per-step number that looks
+    plausible and is quietly wrong. Totalling them is cheap and catches both a
+    missing step and a mismeasured piece.
+    """
+    bad = []
+    parts = {}
+    emt = {}
+    for _title, pre, _note in STEPS:
+        for p, n in step_parts(doc, pre).items():
+            parts[p] = parts.get(p, 0) + n
+        for (L, _kind), n in step_emt(doc, pre).items():
+            emt[L] = emt.get(L, 0) + n
+    for p in sorted(export.SPLIT):
+        want, got = sum(export.SPLIT[p]), parts.get(p, 0)
+        if want != got:
+            bad.append("%s: %d in the assembly steps, %d in the print list"
+                       % (p, got, want))
+    cut = {}
+    for _nm, q, L in P.cutlist():
+        k = int(round(L))
+        cut[k] = cut.get(k, 0) + q
+    for L in sorted(set(list(cut) + list(emt)), reverse=True):
+        want, got = cut.get(L, 0), emt.get(L, 0)
+        if want != got:
+            bad.append("%d mm conduit: %d in the assembly steps, %d in the "
+                       "cut list" % (L, got, want))
+    names = [o.Name for o in placed(doc) if o.Name.startswith(EMT_PREFIX)]
+    claimed = set()
+    for _title, pre, _note in STEPS:
+        claimed |= set(n for n in names if starts(n, pre))
+    for n in sorted(set(names) - claimed):
+        bad.append("%s is in no assembly step" % n)
+    return bad
 
 
 def build():
@@ -164,9 +233,9 @@ def build():
                                         for p, n in sorted(parts.items())))
             A("")
         if emt:
-            A("**Conduit:** " + ", ".join("%d x %d mm" % (n, k)
-                                          for k, n in sorted(emt.items(),
-                                                             reverse=True)))
+            A("**Conduit:** " + ", ".join(
+                "%d x %d mm %s" % (n, L, kind)
+                for (L, kind), n in sorted(emt.items(), reverse=True)))
             A("")
         f = dict((nm, 0) for nm, _ in SIZES)
         for p, n in parts.items():

@@ -105,6 +105,13 @@ def verify(d):
                 if not qbad else "; ".join(qbad), not qbad))
     ok = ok and not qbad
 
+    import gen_assembly
+    cbad = gen_assembly.check_coverage(d)
+    out.append(("assembly steps",
+                "every part and every cut accounted for"
+                if not cbad else "; ".join(cbad), not cbad))
+    ok = ok and not cbad
+
     orph = interfere.clamps_engaged(d)
     out.append(("clamps engaged",
                 "all engaged" if not orph else "ORPHANS: " + ", ".join(orph),
