@@ -10,3 +10,5 @@ LICENSE text eol=lf
 # Never line-ending-convert or try to diff these.
 *.stl   binary
 *.FCStd binary
+*.png   binary
+*.gif   binary

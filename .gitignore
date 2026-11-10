@@ -11,3 +11,7 @@ __pycache__/
 # when the geometry is identical. The STLs and the Markdown ARE committed,
 # because those regenerate byte-for-byte.
 EMT_CoreXY.FCStd
+
+# Intermediate render frames; the finished GIFs/PNGs in docs/img are committed.
+docs/_frames/
+docs/img/_*.png

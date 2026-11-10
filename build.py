@@ -99,6 +99,12 @@ def verify(d):
                 % (len(objs), len(pairs), len(hits)), not hits))
     ok = ok and not hits
 
+    qbad = export.check_quantities(d)
+    out.append(("quantities",
+                "every printed part's count matches the model"
+                if not qbad else "; ".join(qbad), not qbad))
+    ok = ok and not qbad
+
     orph = interfere.clamps_engaged(d)
     out.append(("clamps engaged",
                 "all engaged" if not orph else "ORPHANS: " + ", ".join(orph),
@@ -138,7 +144,8 @@ def main(write=True, save=True, docs=True):
     if docs and write:
         import gen_readme
         import gen_printlist
-        for mod in (gen_readme, gen_printlist):
+        import gen_assembly
+        for mod in (gen_readme, gen_printlist, gen_assembly):
             path, n = mod.build()
             say("  %-14s ok   %s (%d lines)"
                   % ("docs", os.path.basename(path), n))

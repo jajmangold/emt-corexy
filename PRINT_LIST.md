@@ -1,6 +1,6 @@
 # Print list
 
-54 pieces, 26 files. Every file in `stl/` is print-ready as-is: parts that
+48 pieces, 26 files. Every file in `stl/` is print-ready as-is: parts that
 need the opposite hand have their own `_M` file, so **nothing here depends
 on remembering to mirror something in the slicer**.
 
@@ -35,12 +35,12 @@ on remembering to mirror something in the slicer**.
 
 | File | Qty | cm3 | Print it | Bed mm2 | Notes |
 |---|---|---|---|---|---|
-| `Joint4_corner.stl` | 18 | 36 | as modelled, +Z up | 710 | **brim** |
+| `Joint4_corner.stl` | 12 | 36 | as modelled, +Z up | 710 | **brim** |
 | `FootPad.stl` | 4 | 38 | as modelled, +Z up | 2463 | - |
 | `TeeZCross.stl` | 2 | 23 | upside down (rotate 180 about X) | 651 | **brim** |
 | `TeeZCross_M.stl` | 2 | 23 | mirror of the above | 651 | **brim** |
 
-26 pieces, 885 cm3 -> about 0.45-0.56 kg, 14-29 h.
+20 pieces, 672 cm3 -> about 0.34-0.43 kg, 11-22 h.
 
 ## Batch 2 - Bracing
 
@@ -94,16 +94,16 @@ on remembering to mirror something in the slicer**.
 
 ## Total
 
-**54 pieces, 3266 cm3** = 1.7-2.1 kg and roughly 52-109 print-hours
+**48 pieces, 3053 cm3** = 1.6-1.9 kg and roughly 49-102 print-hours
 at 40-50 % effective density and 15-25 cm3/h.
 
 Batches are in assembly order, so you can start building the frame while
-the rest prints. Batch 1 alone (26 pieces) gets the whole frame standing.
+the rest prints. Batch 1 alone (20 pieces) gets the whole frame standing.
 
 ## Print the frame joints first and check one
 
-`Joint4_corner` is 18 of the 54 pieces. Print **one**, put it on a real
-piece of conduit and tighten the bolt before committing to the other 17:
+`Joint4_corner` is 12 of the 48 pieces. Print **one**, put it on a real
+piece of conduit and tighten the bolt before committing to the other 11:
 the bore is sized from the nominal 17.93 mm OD and real EMT wanders about
 +-0.1 mm between makes. If it is tight, raise `EMT_FIT` in `params.py`
 (currently 0.45 mm) and re-run; if it is sloppy, lower it.

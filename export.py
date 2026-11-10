@@ -21,7 +21,7 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "stl")
 
 # name -> (builder, quantity, note)
 PARTS = [
-    ("Joint4_corner",  S1.joint4_shape,      18, "frame corner, all 4 levels + wipe rail"),
+    ("Joint4_corner",  S1.joint4_shape,      12, "frame corner: bottom x4, cap x4, front mid x2, wipe x2"),
     ("FootPad",        S1.foot_shape,         4, "post feet"),
     ("TeeZCross",      S1.tee_zcross_shape,   4, "Z-motor cross rail tees"),
     ("ZMotorMount",    S1.zmotor_mount_shape, 2, "Z motor + 2 rod feet"),
@@ -56,7 +56,7 @@ PARTS = [
 # opposite hand. Both chiralities get their own STL so nothing depends on
 # remembering to flip a part in the slicer.
 SPLIT = {
-    "Joint4_corner":      (18, 0),   # place_corner() is rotation-only
+    "Joint4_corner":      (12, 0),   # place_corner() is rotation-only
     "FootPad":            (4, 0),
     "TeeZCross":          (2, 2),
     "ZMotorMount":        (1, 1),
@@ -90,6 +90,64 @@ BATCH = {
 }
 BATCH_NAME = {1: "Frame", 2: "Bracing", 3: "Z axis", 4: "Gantry",
               5: "Wipe station"}
+
+
+# Which document objects are instances of which printed part. This exists so
+# the quantities above can be CHECKED against the model instead of trusted.
+#
+# They were not, and it cost: Joint4_corner said 16 from an era when the frame
+# had four levels of corner joints. The gantry rectangle and two of the three
+# mid rails were deleted later and the count was never revisited, so the print
+# list asked for six joints that have nowhere to go - 213 cm3, a fifth of all
+# the plastic in the machine. Adding the wipe rail then bumped it 16 -> 18,
+# propagating the stale number rather than deriving it.
+INSTANCES = {
+    "Joint4_corner":    lambda n: n.startswith("Joint4"),
+    "FootPad":          lambda n: n.startswith("Foot_"),
+    "TeeZCross":        lambda n: n.startswith("TeeZCross"),
+    "ZMotorMount":      lambda n: n.startswith("ZMotorMount"),
+    "BedCarriage":      lambda n: n.startswith("BedCarriage"),
+    "BedMount":         lambda n: n.startswith("BedMount"),
+    "YRodBlock":        lambda n: n.startswith("YRodBlock"),
+    "YCarriage":        lambda n: n.startswith("YCarriage"),
+    "XCarriage":        lambda n: n == "XCarriage",
+    "WipeBracket":      lambda n: n == "WipeBracket",
+    "CornerTower_R":    lambda n: n == "CornerTower_R",
+    "CornerTower_L":    lambda n: n == "CornerTower_L",
+    # a diagonal's two ends are different parts: _0 is the low end, _1 the high
+    "Gusset_side_low":  lambda n: n.startswith("Gusset_side") and n.endswith("_0"),
+    "Gusset_side_high": lambda n: n.startswith("Gusset_side") and n.endswith("_1"),
+    "Gusset_rear_low":  lambda n: n.startswith("Gusset_rear") and n.endswith("_0"),
+    "Gusset_rear_high": lambda n: n.startswith("Gusset_rear") and n.endswith("_1"),
+    "Gusset_cap_a":     lambda n: n.startswith("Gusset_cap") and n.endswith("_0"),
+    "Gusset_cap_b":     lambda n: n.startswith("Gusset_cap") and n.endswith("_1"),
+}
+
+
+def check_quantities(doc):
+    """Every printed part's declared quantity must equal the number of
+    instances actually placed in the model. Returns a list of problems."""
+    names = [o.Name for o in doc.Objects
+             if o.isDerivedFrom("Part::Feature")]
+    bad = []
+    claimed = {}
+    for part, pred in INSTANCES.items():
+        hits = [n for n in names if pred(n)]
+        for n in hits:
+            claimed.setdefault(n, []).append(part)
+        placed = len(hits)
+        declared = sum(SPLIT.get(part, (0, 0)))
+        if placed != declared:
+            bad.append("%s: %d placed in the model, %d in the print list"
+                       % (part, placed, declared))
+    for part in SPLIT:
+        if part not in INSTANCES:
+            bad.append("%s has no INSTANCES rule, so its quantity is unchecked"
+                       % part)
+    for n, parts in claimed.items():
+        if len(parts) > 1:
+            bad.append("%s counted as %s" % (n, " and ".join(parts)))
+    return bad
 
 
 def export_mirrors(write=True):

@@ -4,10 +4,37 @@ A large CoreXY printer whose **frame is nothing but 1/2 inch EMT electrical
 conduit**; every joint, bearing block and bracket is printed. All motion runs
 on hardened linear rod. Controller is a BTT SKR Pico.
 
-**Print-ready STLs are in [`stl/`](stl/); what to print and how is in
-[PRINT_LIST.md](PRINT_LIST.md).** If you only want to build the machine,
-those two and this file are all you need - skip to
-[the cut list](#emt-cut-list).
+
+![the machine](docs/img/hero.gif)
+
+**Building one?** Everything you need is three files:
+
+| | |
+|---|---|
+| [PRINT_LIST.md](PRINT_LIST.md) | what to print, how to orient it, how long it takes |
+| [ASSEMBLY.md](ASSEMBLY.md) | 13 illustrated steps, with a fastener list |
+| [`stl/`](stl/) | 26 print-ready STLs, both hands already mirrored |
+
+The rest of this file is why it is shaped the way it is.
+
+## How it moves
+
+![motion](docs/img/motion.gif)
+
+CoreXY: the two rear motors never move, and between them they drive both
+X and Y. The bed carries Z - **the gantry never changes height**, which is
+why anything bolted to the frame inside the toolhead's reach has to stay
+below the nozzle. Belts are hidden in this animation because the model
+draws them for the parked position only.
+
+## What it is made of
+
+![exploded](docs/img/exploded.gif)
+
+Every printed part and every piece of hardware, lifting off the conduit it
+clamps to. The conduit does not move - it is the skeleton everything else
+locates against, and there is not a single welded, drilled or tapped joint
+in the frame.
 
 ## Build it from source
 
@@ -63,7 +90,7 @@ STLs, the cut list and the print list at once.
 | Bed | 310 mm square, print surface travels Z 108..508 |
 | Conduit | 1/2 in EMT, 17.93 mm OD, 1.07 mm wall |
 | EMT needed | 11576 mm = 38.0 ft = 4 x 10 ft stick |
-| Printed plastic | 3266 cm3 of solid volume across 18 part types |
+| Printed plastic | 3053 cm3 of solid volume across 18 part types |
 
 The frame is deeper than it is wide (550 vs 490 between post centres).
 That is not styling: the A/B motors have to sit behind the Y-carriage sweep,
@@ -205,7 +232,7 @@ fixed bore would be either loose or unassemblable. Bore is 18.38 mm
 
 | Part | Qty | Size mm | cm3 ea | Notes |
 |---|---|---|---|---|
-| `Joint4_corner` | 18 | 59 x 59 x 44 | 36 | frame corner, all 4 levels + wipe rail |
+| `Joint4_corner` | 12 | 59 x 59 x 44 | 36 | frame corner: bottom x4, cap x4, front mid x2, wipe x2 |
 | `FootPad` | 4 | 56 x 56 x 45 | 38 | post feet |
 | `TeeZCross` | 4 | 43 x 38 x 38 | 23 | Z-motor cross rail tees |
 | `ZMotorMount` | 2 | 38 x 147 x 62 | 104 | Z motor + 2 rod feet |
@@ -236,7 +263,7 @@ frame corners.
 ## Material efficiency
 
 The first version of this design used **5481 cm3** of plastic. It now uses
-**3266 cm3, a 40 % reduction**, with no loss of function - every part is
+**3053 cm3, a 44 % reduction**, with no loss of function - every part is
 still a single closed solid and the full clearance set still verifies.
 Three changes did it.
 
@@ -261,8 +288,8 @@ Z-rod top arm was a 65 x 138 x 20 slab. All now pocketed.
 
 | Part | was | now | |
 |---|---|---|---|
-| `Joint4_corner` (x18) | 91 cm3 | **36 cm3** | -61 % |
 | `BedCarriage` (x2) | 230 cm3 | **221 cm3** | -4 % |
+| `Joint4_corner` (x12) | 91 cm3 | **36 cm3** | -61 % |
 | `YCarriage` (x2) | 248 cm3 | **164 cm3** | -34 % |
 | `ZMotorMount` (x2) | 152 cm3 | **104 cm3** | -31 % |
 | `XCarriage` (x1) | 135 cm3 | **202 cm3** | +50 % |
@@ -277,7 +304,7 @@ Z-rod top arm was a 65 x 138 x 20 slab. All now pocketed.
 | `Gusset_side_low` (x2) | 69 cm3 | **43 cm3** | -37 % |
 | `Gusset_rear_low` (x1) | 68 cm3 | **48 cm3** | -30 % |
 | `Gusset_rear_high` (x1) | 68 cm3 | **48 cm3** | -30 % |
-| **whole machine** | **5481 cm3** | **3266 cm3** | **-40 %** |
+| **whole machine** | **5481 cm3** | **3053 cm3** | **-44 %** |
 
 Still on the table: **let the tubes CROSS instead of butting into collars**,
 which is what Maker Pipe actually does. It removes the collars entirely and
@@ -537,8 +564,8 @@ are all commodity:
 | EMT frame | ~30 USD | 38 ft of 1/2 in conduit |
 | T8 screws, bearings, pulleys, belt | ~80-100 USD | commodity |
 
-**The irreducible cost is not money, it is print time.** 3266 cm3 of solid
-part volume across 54 pieces is **1.7-2.1 kg of filament and roughly
+**The irreducible cost is not money, it is print time.** 3053 cm3 of solid
+part volume across 48 pieces is **1.6-1.9 kg of filament and roughly
 90-180 print-hours** (40-50 percent effective density, 15-25 cm3/h). The 16
 corner joints alone are ~1450 cm3. A 0.6 nozzle at 0.3 mm roughly halves
 that, and these are structural blocks - none of them need a fine layer.
@@ -575,7 +602,7 @@ makes a conduit frame work at all, is the form
 - **An EMT box frame is still not extrusion.** Even triangulated, a pinch
   clamp on round tube can slip under shock load. Tighten the brace
   gussets properly and check them after the first few prints.
-- **18 corner joints at 36 cm3 each is the single biggest print** - 640 cm3,
+- **12 corner joints at 36 cm3 each is the single biggest print** - 426 cm3,
   about a fifth of all the plastic in the machine. If that is too much,
   `CLAMP_WALL` and the socket lengths in `joint4_shape()` are the knobs.
 - The lead screws **and the Z rods are unsupported at the top.** The rods
