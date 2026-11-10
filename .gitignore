@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+
+# FreeCAD writes a .FCBak beside the document on every save
+*.FCBak
+*.FCStd1
+
+# The FreeCAD document is a GENERATED artifact - `FreeCADCmd build.py` recreates
+# it in about a minute. It is not committed because every save rewrites internal
+# timestamps, so it would show as a 1.3 MB binary diff on every rebuild even
+# when the geometry is identical. The STLs and the Markdown ARE committed,
+# because those regenerate byte-for-byte.
+EMT_CoreXY.FCStd

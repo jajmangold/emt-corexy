@@ -1,0 +1,12 @@
+# Generated text files are written with LF; keep them that way on every
+# platform so regenerating them never shows up as a whole-file diff.
+*.py   text eol=lf
+*.md   text eol=lf
+*.yml  text eol=lf
+.gitignore  text eol=lf
+.gitattributes text eol=lf
+LICENSE text eol=lf
+
+# Never line-ending-convert or try to diff these.
+*.stl   binary
+*.FCStd binary
